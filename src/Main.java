@@ -3,8 +3,11 @@ import javax.swing.*;
 
 public class Main extends JFrame {
 
+    static VisualPanel panel;
+
     public static void main(String[] args) {
-        Main m = new Main("Testabooey");
+        Main m = new Main("Physics Demos");
+        new Thread(panel).start();
     }
 
     /** 
@@ -25,7 +28,8 @@ public class Main extends JFrame {
 
     private void setup(JFrame target) {
         target.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        target.add(new VisualPanel());
+        panel = new VisualPanel();
+        target.add(panel);
 
         target.pack();
         target.setVisible(true);
