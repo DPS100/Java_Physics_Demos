@@ -1,5 +1,7 @@
 package src.physics;
 
+import java.awt.Graphics;
+
 public abstract class PhysicsBody {
     protected Vector position;
     protected Vector velocity;
@@ -98,5 +100,22 @@ public abstract class PhysicsBody {
 
     public void setMass(double mass) {
         this.mass = mass;
+    }
+
+    /**
+     * Draws this body to graphics object.
+     * Should NOT call {@link #timeStep(double)}, instead caller should call both methods seperately
+     * @param g Graphics object
+     */
+    public abstract void drawBody(Graphics g);
+
+    /**
+     * Uses a time step, then draws this body.
+     * @param g Graphics object
+     * @param deltaT Time since last time step
+     */
+    public void drawBodyUsingTime(Graphics g, double deltaT) {
+        timeStep(deltaT);
+        drawBody(g);
     }
 }
