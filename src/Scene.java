@@ -10,7 +10,7 @@ import java.awt.Graphics;
 import java.time.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class VisualPanel extends JPanel implements Runnable {
+public class Scene extends JPanel implements Runnable {
 
     protected int width;
     protected int height;
@@ -24,7 +24,7 @@ public class VisualPanel extends JPanel implements Runnable {
      * @param width Initial width of panel (Screen size: pixels)
      * @param height Initial height of panel (Screen size: pixels)
      */
-    public VisualPanel(int width, int height) {
+    public Scene(int width, int height) {
         super();
         setup(width, height);
     }
@@ -33,7 +33,7 @@ public class VisualPanel extends JPanel implements Runnable {
      * Visual panel constructor.
      * Initializes width and height to 500 x 500
      */
-    public VisualPanel() {
+    public Scene() {
         super();
         setup(initialWidth, initialHeight);
     }

@@ -3,7 +3,7 @@ import javax.swing.*;
 
 public class Main extends JFrame {
 
-    static VisualPanel panel;
+    static Scene panel;
 
     public static void main(String[] args) {
         Main m = new Main("Physics Demos");
@@ -28,7 +28,7 @@ public class Main extends JFrame {
 
     private void setup(JFrame target) {
         target.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        panel = new VisualPanel();
+        panel = new Scene();
         target.add(panel);
 
         target.pack();
