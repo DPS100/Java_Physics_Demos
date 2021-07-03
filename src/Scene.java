@@ -6,18 +6,22 @@ import src.physics.*;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 import java.time.*;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Scene extends JPanel implements Runnable {
+public class Scene extends JPanel implements Runnable, ComponentListener {
 
     protected int width;
     protected int height;
     private static final int initialWidth = 500;
     private static final int initialHeight = 500;
     private ArrayList<PhysicsBody> bodies;
+    private ArrayList<Double> tickTimes;
+    private double avgTickTime = 0;
     AtomicInteger tickTimeNano = new AtomicInteger(-1);
 
     /**
@@ -51,23 +55,11 @@ public class Scene extends JPanel implements Runnable {
         bodies = new ArrayList<PhysicsBody>();
         bodies.add(new Ball(50));
         bodies.get(0).applyVelocity(new Vector(16, 16));
+        tickTimes = new ArrayList<Double>();
+        this.addComponentListener(this);
     }
     
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(width, height);
-    }
 
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        physicsStep(g);
-    }
-
-    @Override
-    public void run() {
-        runLoop();
-    }
 
     /**
      * Advances all physics objects belonging to this panel.
@@ -75,17 +67,31 @@ public class Scene extends JPanel implements Runnable {
      * @param g
      */
     private void physicsStep(Graphics g) {
+        // Tick time
+        int tickTimeInt = tickTimeNano.get(); // Tick time in nanoseconds
+        double tickTimeSecond = tickTimeInt / Constants.nanosPerSecond;
+
+        // Bodies
         for(int i = 0; i < bodies.size(); i++) {
             PhysicsBody body = bodies.get(i);
-            int tickTimeInt = tickTimeNano.get(); // Tick time in nanoseconds
 
             if(body != null && tickTimeInt != -1) {
-                double tickTime = tickTimeInt / Constants.nanosPerSecond;
-                body.drawBodyUsingTime(g, tickTime);
-                g.drawChars(new String("TPS " + (tickTime * Constants.ticksPerSecond * Constants.ticksPerSecond)).toCharArray(), 0, 8, 400, 10);
+                body.drawBodyUsingTime(g, tickTimeSecond);
             } else {
                 System.out.println("Null body or tickTime");
             }
+        }
+
+        // TPS counter
+        if(tickTimeInt != -1) {
+            tickTimes.add(tickTimeSecond);
+            double totalTickTime = 0;
+            for(int t = 0; t < tickTimes.size(); t++) totalTickTime += tickTimes.get(t);
+            if(totalTickTime > 1 / Constants.maxTickCountPerSecond) {
+                avgTickTime = totalTickTime / tickTimes.size();
+                tickTimes.clear();
+            }
+            g.drawChars(new String("TPS " + (1 / avgTickTime)).toCharArray(), 0, 8, width - Constants.charPixelsX * 8, Constants.charPixelsY);
         }
     }
 
@@ -116,5 +122,42 @@ public class Scene extends JPanel implements Runnable {
             repaint();
             t0 = LocalTime.now();
         }
+    }
+    
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(width, height);
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        physicsStep(g);
+    }
+
+    @Override
+    public void run() {
+        runLoop();
+    }
+
+    @Override
+    public void componentResized(ComponentEvent e) {
+        width = this.getWidth();
+        height = this.getHeight();
+    }
+
+    @Override
+    public void componentMoved(ComponentEvent e) {
+
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+ 
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+
     }
 }
