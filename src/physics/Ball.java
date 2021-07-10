@@ -2,32 +2,34 @@ package src.physics;
 
 import java.awt.Graphics;
 
+import src.Scene;
+
 public class Ball extends PhysicsBody {
     private double radius;
     private final static double defaultRadius = 10;
 
-    public Ball(Vector position, double mass, double radius) {
-        super(position, mass);
+    public Ball(Vector position, double mass, double radius, Scene owner) {
+        super(position, mass, owner);
         this.radius = radius;
     }
 
-    public Ball(Vector position, double radius) {
-        super(position);
+    public Ball(Vector position, double radius, Scene owner) {
+        super(position, owner);
         this.radius = radius;
     }
 
-    public Ball(double radius) {
-        super();
+    public Ball(double radius, Scene owner) {
+        super(owner);
         this.radius = radius;
     }
 
-    public Ball(Vector position) {
-        super(position);
+    public Ball(Vector position, Scene owner) {
+        super(position, owner);
         this.radius = defaultRadius;
     }
 
-    public Ball() {
-        super();
+    public Ball(Scene owner) {
+        super(owner);
         this.radius = 10;
     }
 

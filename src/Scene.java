@@ -22,6 +22,7 @@ public class Scene extends JPanel implements Runnable, ComponentListener {
     private ArrayList<PhysicsBody> bodies;
     private ArrayList<Double> tickTimes;
     private double avgTickTime = 0;
+    private boolean playing = true;
     AtomicInteger tickTimeNano = new AtomicInteger(-1);
 
     /**
@@ -53,7 +54,7 @@ public class Scene extends JPanel implements Runnable, ComponentListener {
         this.width = width;
         this.height = height;
         bodies = new ArrayList<PhysicsBody>();
-        bodies.add(new Ball(50));
+        bodies.add(new Ball(50, this));
         bodies.get(0).applyVelocity(new Vector(16, 16));
         tickTimes = new ArrayList<Double>();
         this.addComponentListener(this);
@@ -103,7 +104,7 @@ public class Scene extends JPanel implements Runnable, ComponentListener {
     private void runLoop() {
         LocalTime t0 = LocalTime.now();
         LocalTime t1;
-        while(true) {
+        while(playing) {
             t1 = LocalTime.now();
             Duration d = Duration.between(t0, t1);
             double tickTime = d.getNano() / Constants.nanosPerSecond + d.getSeconds();
@@ -148,12 +149,12 @@ public class Scene extends JPanel implements Runnable, ComponentListener {
 
     @Override
     public void componentMoved(ComponentEvent e) {
-
+        
     }
 
     @Override
     public void componentShown(ComponentEvent e) {
- 
+
     }
 
     @Override

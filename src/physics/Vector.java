@@ -66,25 +66,33 @@ public class Vector {
     }
 
     /**
-     * Multiplies this vector by a factor
-     * @param factor
+     * Multiplies this vector by a magnitude
+     * @param magnitude
      * @return Reference to this object
      */
-    public Vector mult(double factor) {
-        x *= factor;
-        y *= factor;
+    public Vector mult(double magnitude) {
+        x *= magnitude;
+        y *= magnitude;
         return this;
     }
 
     /**
-     * Multiplies a vector by a factor and returns the result.
+     * Multiplies a vector by a magnitude and returns the result.
      * True binary operation.
      * @param v Vector to multiply
-     * @param factor Factor to multiply by
+     * @param magnitude Magnitude to multiply by
      * @return Resulting vector
      */
-    public static Vector mult(Vector v, double factor) {
-        return new Vector(v).mult(factor);
+    public static Vector mult(Vector v, double magnitude) {
+        return new Vector(v).mult(magnitude);
+    }
+
+    /**
+     * @param v Target vector
+     * @return Magnitude of given vector
+     */
+    public static double getMagnitude(Vector v) {
+        return Math.sqrt(v.x * v.x + v.y * v.y);
     }
 
     /**

@@ -2,29 +2,34 @@ package src.physics;
 
 import java.awt.Graphics;
 
+import src.Scene;
+
 public abstract class PhysicsBody {
     protected Vector position;
     protected Vector velocity;
     protected Vector acceleration;
     protected double mass;
+    protected Scene owner;
 
     /**
      * Physics body constructor.
      * Defaults velocity and acceleration vectors to 0.
      * @param position Initial postition
      * @param mass Mass of this body (base unit is 1).
+     * @param owner Scene that this object belongs to
      */
-    protected PhysicsBody(Vector position, double mass) {
-        setup(position, new Vector(), new Vector(), mass);
+    protected PhysicsBody(Vector position, double mass, Scene owner) {
+        setup(position, new Vector(), new Vector(), mass, owner);
     }
 
     /**
      * Physics body constructor.
      * Defaults position, velocity, and acceleration vectors to 0.
      * @param mass Mass of this body (base unit is 1).
+     * @param owner Scene that this object belongs to
      */
-    protected PhysicsBody(double mass) {
-        setup(new Vector(), new Vector(), new Vector(), mass);
+    protected PhysicsBody(double mass, Scene owner) {
+        setup(new Vector(), new Vector(), new Vector(), mass, owner);
     }
 
     /**
@@ -32,18 +37,20 @@ public abstract class PhysicsBody {
      * Defaults velocity and acceleration vectors to 0.
      * Defaults mass to 1.
      * @param position Initial position
+     * @param owner Scene that this object belongs to
      */
-    protected PhysicsBody(Vector position) {
-        setup(position, new Vector(), new Vector(), 1);
+    protected PhysicsBody(Vector position, Scene owner) {
+        setup(position, new Vector(), new Vector(), 1, owner);
     }
 
     /**
      * Physics body constructor.
      * Defaults position, velocity, and acceleration vectors to 0.
      * Defaults mass to 1.
+     * @param owner Scene that this object belongs to
      */
-    protected PhysicsBody() {
-        setup(new Vector(), new Vector(), new Vector(), 1);
+    protected PhysicsBody(Scene owner) {
+        setup(new Vector(), new Vector(), new Vector(), 1, owner);
     }
 
     /**
@@ -53,12 +60,14 @@ public abstract class PhysicsBody {
      * @param velocity Initial velocity
      * @param acceleration Initial acceleration
      * @param mass Mass of this body (base unit is 1).
+     * @param owner Scene that this object belongs to
      */
-    private void setup(Vector position, Vector velocity, Vector acceleration, double mass) {
+    private void setup(Vector position, Vector velocity, Vector acceleration, double mass, Scene owner) {
         this.position = position;
         this.velocity = velocity;
         this.acceleration = acceleration;
         this.mass = 1;
+        this.owner = owner;
     }
 
     /**
@@ -67,8 +76,11 @@ public abstract class PhysicsBody {
      * @param deltaT Time since last time step
      */
     public void timeStep(double deltaT) {
-        velocity.add(Vector.mult(acceleration, deltaT));
-        position.add(Vector.mult(velocity, deltaT));
+        Vector deltaV = Vector.mult(acceleration, deltaT); // TODO limit velocity (relitavistic speeds)
+        velocity.add(deltaV);
+        
+        Vector deltaP = Vector.mult(velocity, deltaT); // TODO limit position (edge detection)
+        position.add(deltaP);
     }
 
     /**
